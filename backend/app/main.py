@@ -28,6 +28,7 @@ app.add_middleware(
         "http://localhost:3000",  # Nuxt default
         "http://localhost:3001",  # Nuxt alternative port
         "http://locations-sm.salchimonster.com",  # Producción frontend
+        "https://salchimonster.com",  # Sitio principal
     ],
     allow_credentials=True,
     allow_methods=["*"],
