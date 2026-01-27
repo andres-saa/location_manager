@@ -24,9 +24,9 @@ const STORAGE_TOKEN_KEY = 'auth_token'
 const STORAGE_USER_KEY = 'auth_user'
 
 export const useAuthStore = defineStore('auth', () => {
-  // Intentar cargar token y usuario desde sessionStorage
-  const savedToken = sessionStorage.getItem(STORAGE_TOKEN_KEY)
-  const savedUser = sessionStorage.getItem(STORAGE_USER_KEY)
+  // Intentar cargar token y usuario desde localStorage
+  const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY)
+  const savedUser = localStorage.getItem(STORAGE_USER_KEY)
   
   const token = ref<string | null>(savedToken)
   const user = ref<User | null>(savedUser ? JSON.parse(savedUser) : null)
@@ -45,36 +45,41 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Actions
   async function initializeAuth() {
-    // Si ya hay un token guardado, validarlo primero
+    // Si ya hay un token guardado en localStorage, validarlo primero
     if (token.value && user.value) {
       const isValid = await validateAndSetToken(token.value)
       if (isValid) {
         return true
       }
-      // Si el token guardado no es válido, limpiar y buscar en URL
+      // Si el token guardado no es válido, limpiar
       clearStorage()
     }
 
-    // Obtener token de los parámetros de la URL
+    // Obtener token de los parámetros de la URL (si viene desde el login)
     const urlParams = new URLSearchParams(window.location.search)
     const tokenParam = urlParams.get('token')
 
-    if (!tokenParam) {
-      redirectToLogin()
-      return false
+    if (tokenParam) {
+      // Si hay token en la URL, validarlo y guardarlo
+      return await validateAndSetToken(tokenParam)
     }
 
-    return await validateAndSetToken(tokenParam)
+    // Si no hay token guardado ni en la URL, redirigir al login
+    redirectToLogin()
+    return false
   }
 
   function saveToStorage(tokenValue: string, userValue: User) {
-    sessionStorage.setItem(STORAGE_TOKEN_KEY, tokenValue)
-    sessionStorage.setItem(STORAGE_USER_KEY, JSON.stringify(userValue))
+    localStorage.setItem(STORAGE_TOKEN_KEY, tokenValue)
+    localStorage.setItem(STORAGE_USER_KEY, JSON.stringify(userValue))
+    // También actualizar las refs reactivas
+    token.value = tokenValue
+    user.value = userValue
   }
 
   function clearStorage() {
-    sessionStorage.removeItem(STORAGE_TOKEN_KEY)
-    sessionStorage.removeItem(STORAGE_USER_KEY)
+    localStorage.removeItem(STORAGE_TOKEN_KEY)
+    localStorage.removeItem(STORAGE_USER_KEY)
     token.value = null
     user.value = null
   }
@@ -85,11 +90,12 @@ export const useAuthStore = defineStore('auth', () => {
       const response = await validateToken(tokenValue)
 
       if (response && response.access_token) {
-        token.value = response.access_token
+        const accessToken = response.access_token
         // Decodificar el token JWT
-        const decoded = await decodeJWT(response.access_token)
+        const decoded = await decodeJWT(accessToken)
         if (decoded) {
-          user.value = decoded
+          // Guardar en localStorage para persistir entre recargas
+          saveToStorage(accessToken, decoded)
           // Limpiar el token de la URL
           cleanTokenFromUrl()
           // Iniciar validación periódica
