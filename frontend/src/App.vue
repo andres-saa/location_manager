@@ -58,7 +58,7 @@
               <!-- Badge de bandera -->
               <img 
                 :src="getCountryFlagUrl(selectedCountry)" 
-                :alt="getCountryOption.label"
+                :alt="getCountryOption?.label || 'País'"
                 class="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white shadow-md object-cover"
               />
             </div>
@@ -85,7 +85,7 @@
           <!-- Bandera del país seleccionado -->
           <img 
             :src="getCountryFlagUrl(selectedCountry)" 
-            :alt="getCountryOption.label"
+            :alt="getCountryOption?.label || 'País'"
             class="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 object-contain pointer-events-none"
           />
           <!-- Icono de dropdown -->

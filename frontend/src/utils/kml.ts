@@ -187,7 +187,7 @@ export function parseKML(kmlText: string): KMLPolygon[] {
             const allStyles = xmlDoc.getElementsByTagName('Style')
             for (let i = 0; i < allStyles.length; i++) {
               const style = allStyles[i]
-              if (style.getAttribute('id') === cleanId) {
+              if (style && style.getAttribute('id') === cleanId) {
                 const polyStyle = style.querySelector('PolyStyle')
                 if (polyStyle) {
                   const colorEl = polyStyle.querySelector('color')
@@ -204,7 +204,7 @@ export function parseKML(kmlText: string): KMLPolygon[] {
               const allStyleMaps = xmlDoc.getElementsByTagName('StyleMap')
               for (let i = 0; i < allStyleMaps.length; i++) {
                 const styleMap = allStyleMaps[i]
-                if (styleMap.getAttribute('id') === cleanId) {
+                if (styleMap && styleMap.getAttribute('id') === cleanId) {
                   // Buscar el estilo normal (normal) o destacado (highlight)
                   const pair = styleMap.querySelector('Pair[key="normal"]') || 
                               styleMap.querySelector('Pair[key="highlight"]') ||
@@ -218,7 +218,7 @@ export function parseKML(kmlText: string): KMLPolygon[] {
                         const pairStyles = xmlDoc.getElementsByTagName('Style')
                         for (let j = 0; j < pairStyles.length; j++) {
                           const pairStyle = pairStyles[j]
-                          if (pairStyle.getAttribute('id') === pairCleanId) {
+                          if (pairStyle && pairStyle.getAttribute('id') === pairCleanId) {
                             const pairPolyStyle = pairStyle.querySelector('PolyStyle')
                             if (pairPolyStyle) {
                               const pairColorEl = pairPolyStyle.querySelector('color')
@@ -248,13 +248,15 @@ export function parseKML(kmlText: string): KMLPolygon[] {
           const docStyles = document.querySelectorAll('Style')
           for (let i = 0; i < docStyles.length; i++) {
             const docStyle = docStyles[i]
-            const docPolyStyle = docStyle.querySelector('PolyStyle')
-            if (docPolyStyle) {
-              const docColorEl = docPolyStyle.querySelector('color')
-              if (docColorEl && docColorEl.textContent) {
-                // Si hay múltiples estilos, usar el primero encontrado
-                color = kmlColorToHex(docColorEl.textContent.trim())
-                break
+            if (docStyle) {
+              const docPolyStyle = docStyle.querySelector('PolyStyle')
+              if (docPolyStyle) {
+                const docColorEl = docPolyStyle.querySelector('color')
+                if (docColorEl && docColorEl.textContent) {
+                  // Si hay múltiples estilos, usar el primero encontrado
+                  color = kmlColorToHex(docColorEl.textContent.trim())
+                  break
+                }
               }
             }
           }
@@ -268,7 +270,7 @@ export function parseKML(kmlText: string): KMLPolygon[] {
       coordsText.split(/\s+/).forEach(coordStr => {
         if (!coordStr.trim()) return
         const parts = coordStr.split(',')
-        if (parts.length >= 2) {
+        if (parts.length >= 2 && parts[0] && parts[1]) {
           const lng = parseFloat(parts[0].trim())
           const lat = parseFloat(parts[1].trim())
           if (!isNaN(lat) && !isNaN(lng)) {

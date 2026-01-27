@@ -8,10 +8,10 @@ const STORAGE_KEY = 'location_manager_selected_country'
 export const useCountryStore = defineStore('country', () => {
   // Estado - inicializar directamente con el valor, no con una función
   const saved = localStorage.getItem(STORAGE_KEY)
-  const initialCountry: Country = (saved && ['colombia', 'usa', 'spain'].includes(saved)) 
-    ? saved as Country 
+  const initialCountry: Country = (saved && ['colombia', 'usa', 'spain'].includes(saved))
+    ? saved as Country
     : 'colombia'
-  
+
   const selectedCountry = ref<Country>(initialCountry)
 
   // Getters

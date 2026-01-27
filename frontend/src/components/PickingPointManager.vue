@@ -13,15 +13,15 @@
           <span>Picking Points Creados</span>
         </h3>
         <div class="flex gap-2 sm:gap-3">
-          <button 
-            @click="showCreateModal = true" 
+          <button
+            @click="showCreateModal = true"
             class="btn-primary flex items-center justify-center gap-1.5 text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5 flex-1 sm:flex-initial"
           >
             <PlusCircleIcon class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
             <span>Crear Nuevo</span>
           </button>
-          <button 
-            @click="loadPickingPoints" 
+          <button
+            @click="loadPickingPoints"
             class="px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base bg-gray-100 text-gray-700 rounded hover:bg-gray-200 flex items-center justify-center gap-1.5 flex-shrink-0"
           >
             <ArrowPathIcon class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
@@ -37,8 +37,8 @@
       <div v-else-if="pickingPoints.length === 0" class="text-center py-4 text-gray-500">
         <TruckIcon class="w-8 h-8 mx-auto mb-1.5 text-gray-400" />
         <p class="text-xs sm:text-sm mb-2">No hay picking points creados</p>
-        <button 
-          @click="showCreateModal = true" 
+        <button
+          @click="showCreateModal = true"
           class="btn-primary flex items-center gap-1.5 mx-auto text-xs px-2.5 py-1.5"
         >
           <PlusCircleIcon class="w-3.5 h-3.5" />
@@ -47,17 +47,17 @@
       </div>
 
       <div v-else class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
-        <div 
-          v-for="pp in pickingPoints" 
-          :key="pp.id || `pp-${pp.site_id}`" 
+        <div
+          v-for="pp in pickingPoints"
+          :key="pp.id || `pp-${pp.site_id}`"
           class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow bg-white"
         >
           <div class="flex p-3 sm:p-4">
             <!-- Imagen de la sede - formato 1:1 -->
             <div class="w-20 sm:w-24 md:w-28 flex-shrink-0">
               <div v-if="getSiteImage(pp.site_id)" class="w-full aspect-square bg-gray-100 overflow-hidden rounded-[0.3rem]">
-                <img 
-                  :src="getSiteImage(pp.site_id)" 
+                <img
+                  :src="getSiteImage(pp.site_id) || undefined"
                   :alt="getSiteName(pp.site_id)"
                   class="w-full h-full object-cover rounded-[0.3rem]"
                 />
@@ -66,7 +66,7 @@
                 <TruckIcon class="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
               </div>
             </div>
-            
+
             <!-- Contenido -->
             <div class="flex-1 pl-3 sm:pl-4 flex flex-col min-w-0">
               <div class="flex justify-between items-start mb-2 gap-2">
@@ -74,14 +74,14 @@
                   <h4 class="font-semibold text-sm sm:text-base text-gray-800 mb-1 truncate">{{ pp.name || 'Sin nombre' }}</h4>
                   <p class="text-xs sm:text-sm text-gray-600 truncate">{{ getSiteName(pp.site_id) }}</p>
                 </div>
-                <span 
+                <span
                   :class="pp.status === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
                   class="px-2 py-1 rounded text-xs font-semibold flex-shrink-0 whitespace-nowrap"
                 >
                   {{ pp.status === 1 ? 'Activo' : 'Inactivo' }}
                 </span>
               </div>
-              
+
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600 flex-1">
                 <div class="flex items-start gap-1.5">
                   <MapPinIcon class="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0 mt-0.5" />
@@ -100,7 +100,7 @@
                   <span class="truncate">Rappi: {{ pp.rappi_picking_point_id }}</span>
                 </div>
                 <div class="flex items-center gap-1.5 sm:col-span-2">
-                  <button 
+                  <button
                     @click="relinkPickingPoint(pp)"
                     :disabled="!pp.rappi_picking_point_id || !pp.id || relinkingId === (pp.id || null) || deletingId === (pp.id || null)"
                     class="px-3 py-1.5 text-xs sm:text-sm bg-blue-100 text-blue-700 rounded hover:bg-blue-200 flex items-center justify-center gap-1.5 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
@@ -109,7 +109,7 @@
                     <ArrowPathIcon v-else class="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     {{ relinkingId === (pp.id || null) ? 'Revincular...' : 'Revincular' }}
                   </button>
-                  <button 
+                  <button
                     @click="unlinkPickingPoint(pp)"
                     :disabled="!pp.rappi_picking_point_id || !pp.id || relinkingId === (pp.id || null) || deletingId === (pp.id || null)"
                     class="px-3 py-1.5 text-xs sm:text-sm bg-red-100 text-red-700 rounded hover:bg-red-200 flex items-center justify-center gap-1.5 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
@@ -134,20 +134,20 @@
             <PlusCircleIcon class="w-4 h-4 sm:w-5 sm:h-5 text-brand" />
             <span>Crear Punto de Recogida</span>
           </h3>
-          <button 
+          <button
             @click="closeCreateModal"
             class="text-gray-500 hover:text-gray-700 p-1"
           >
             <XMarkIcon class="w-5 h-5" />
           </button>
         </div>
-        
+
         <form @submit.prevent="createPickingPoint" class="space-y-2 sm:space-y-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Sede *</label>
-              <select 
-                v-model="formData.site_id" 
+              <select
+                v-model="formData.site_id"
                 required
                 @change="onSiteSelected"
                 :disabled="availableSites.length === 0"
@@ -156,9 +156,9 @@
                 <option :value="undefined">
                   {{ availableSites.length === 0 ? 'No hay sedes disponibles' : 'Seleccione una sede' }}
                 </option>
-                <option 
-                  v-for="site in availableSites" 
-                  :key="site.site_id" 
+                <option
+                  v-for="site in availableSites"
+                  :key="site.site_id"
                   :value="site.site_id"
                 >
                   {{ site.site_name }} ({{ site.city_name || 'N/A' }})
@@ -168,7 +168,7 @@
               <div v-if="selectedSiteInfo" class="mt-1.5 p-2 bg-blue-50 border border-blue-200 rounded-md text-xs">
                 <div class="flex items-start gap-2">
                   <div v-if="selectedSiteInfo.img_id" class="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
-                    <img 
+                    <img
                       :src="`https://backend.salchimonster.com/read-photo-product/${selectedSiteInfo.img_id}`"
                       :alt="selectedSiteInfo.site_name"
                       class="w-full h-full aspect-square object-cover rounded-md"
@@ -200,8 +200,8 @@
             <div class="md:col-span-2">
               <div class="bg-yellow-50 border-l-4 border-yellow-400 p-2 sm:p-3 rounded">
                 <div class="flex items-start gap-2">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     id="allowEdit"
                     v-model="allowEdit"
                     class="mt-0.5 w-4 h-4 text-brand border-gray-300 rounded focus:ring-brand flex-shrink-0"
@@ -220,8 +220,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nombre *</label>
-              <input 
-                v-model="formData.name" 
+              <input
+                v-model="formData.name"
                 required
                 :disabled="!allowEdit"
                 placeholder="Ej: Restaurante Laureles"
@@ -234,8 +234,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Dirección *</label>
-              <input 
-                v-model="formData.address" 
+              <input
+                v-model="formData.address"
                 required
                 :disabled="!allowEdit"
                 placeholder="Ej: Carrera 123 #12 - 1"
@@ -248,8 +248,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Ciudad *</label>
-              <input 
-                v-model="formData.city" 
+              <input
+                v-model="formData.city"
                 required
                 :disabled="!allowEdit"
                 placeholder="Ej: Bogotá"
@@ -262,9 +262,9 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Latitud *</label>
-              <input 
-                v-model.number="formData.lat" 
-                type="number" 
+              <input
+                v-model.number="formData.lat"
+                type="number"
                 step="any"
                 required
                 :disabled="!allowEdit"
@@ -278,9 +278,9 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Longitud *</label>
-              <input 
-                v-model.number="formData.lng" 
-                type="number" 
+              <input
+                v-model.number="formData.lng"
+                type="number"
                 step="any"
                 required
                 :disabled="!allowEdit"
@@ -294,8 +294,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Teléfono *</label>
-              <input 
-                v-model="formData.phone" 
+              <input
+                v-model="formData.phone"
                 required
                 :disabled="!allowEdit"
                 placeholder="31212345567"
@@ -308,8 +308,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Código Postal</label>
-              <input 
-                v-model="formData.zip_code" 
+              <input
+                v-model="formData.zip_code"
                 :disabled="!allowEdit"
                 placeholder="123321"
                 :class="[
@@ -321,8 +321,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nombre de Contacto *</label>
-              <input 
-                v-model="formData.contact_name" 
+              <input
+                v-model="formData.contact_name"
                 required
                 :disabled="!allowEdit"
                 placeholder="Julian"
@@ -335,8 +335,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email de Contacto *</label>
-              <input 
-                v-model="formData.contact_email" 
+              <input
+                v-model="formData.contact_email"
                 type="email"
                 required
                 :disabled="!allowEdit"
@@ -350,8 +350,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">ID Externo *</label>
-              <input 
-                v-model="formData.external_id" 
+              <input
+                v-model="formData.external_id"
                 required
                 :disabled="!allowEdit"
                 placeholder="1234567"
@@ -364,8 +364,8 @@
 
             <div>
               <label class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Tiempo de Preparación (min)</label>
-              <input 
-                v-model.number="formData.preparation_time" 
+              <input
+                v-model.number="formData.preparation_time"
                 type="number"
                 :disabled="!allowEdit"
                 placeholder="30"
@@ -378,22 +378,22 @@
           </div>
 
           <div class="flex flex-col sm:flex-row gap-2 justify-end pt-2 sm:pt-3">
-            <button 
-              type="button" 
-              @click="closeCreateModal" 
+            <button
+              type="button"
+              @click="closeCreateModal"
               class="px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors order-3 sm:order-1"
             >
               Cancelar
             </button>
-            <button 
-              type="button" 
-              @click="resetForm" 
+            <button
+              type="button"
+              @click="resetForm"
               class="px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors order-2 sm:order-2"
             >
               Limpiar
             </button>
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               class="btn-primary flex items-center justify-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 sm:py-2 order-1 sm:order-3"
               :disabled="loading"
             >
@@ -410,9 +410,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed, watch } from 'vue'
-import { 
-  TruckIcon, 
-  PlusCircleIcon, 
+import {
+  TruckIcon,
+  PlusCircleIcon,
   ArrowPathIcon,
   ListBulletIcon,
   MapPinIcon,
@@ -532,16 +532,16 @@ const onSiteSelected = () => {
       formData.value.site_id = undefined as any
       return
     }
-    
+
     // Resetear el checkbox de edición
     allowEdit.value = false
-    
+
     // Prellenar ciudad desde city_name
     formData.value.city = selectedSite.city_name || ''
-    
+
     // Prellenar dirección desde site_address
     formData.value.address = selectedSite.site_address || ''
-    
+
     // Prellenar coordenadas desde location [lat, lng]
     if (selectedSite.location && Array.isArray(selectedSite.location) && selectedSite.location.length === 2) {
       formData.value.lat = selectedSite.location[0]
@@ -550,23 +550,23 @@ const onSiteSelected = () => {
       formData.value.lat = 0
       formData.value.lng = 0
     }
-    
+
     // Prellenar teléfono desde site_phone (remover el + si existe)
     if (selectedSite.site_phone) {
       formData.value.phone = selectedSite.site_phone.replace(/^\+/, '')
     } else {
       formData.value.phone = ''
     }
-    
+
     // Usar el site_id como external_id por defecto
     formData.value.external_id = `PP_${selectedSite.site_id}`
-    
+
     // Usar el nombre de la sede como nombre del picking point
     formData.value.name = selectedSite.site_name || `Picking Point ${selectedSite.site_id}`
-    
+
     // Prellenar email de contacto si existe email_address en la sede
     formData.value.contact_email = selectedSite.email_address || ''
-    
+
     // Prellenar nombre de contacto con el nombre de la sede
     formData.value.contact_name = selectedSite.site_name || 'Contacto'
   }
@@ -579,8 +579,8 @@ const createPickingPoint = async () => {
   }
 
   // Validar que los campos requeridos estén completos
-  if (!formData.value.name || !formData.value.address || !formData.value.city || 
-      !formData.value.phone || !formData.value.contact_name || !formData.value.contact_email || 
+  if (!formData.value.name || !formData.value.address || !formData.value.city ||
+      !formData.value.phone || !formData.value.contact_name || !formData.value.contact_email ||
       !formData.value.external_id || formData.value.lat === 0 || formData.value.lng === 0) {
     alert('Por favor completa todos los campos requeridos')
     return
@@ -696,7 +696,7 @@ const unlinkPickingPoint = async (pp: PickingPoint) => {
   const confirmMessage = `⚠️ ADVERTENCIA: Esta acción eliminará el picking point de Rappi Cargo.\n\n` +
     `Esto borrará la sede de cargo en Rappi y no se podrá deshacer.\n\n` +
     `¿Está seguro de que desea desvincular este picking point?`
-  
+
   if (!confirm(confirmMessage)) {
     return
   }

@@ -5,26 +5,26 @@
         <GlobeAmericasIcon class="w-6 h-6 text-brand" />
         Confirmar País del Polígono
       </h3>
-      
+
       <div class="mb-4">
         <p class="text-gray-700 mb-3">
           El polígono se cargará para el país actualmente seleccionado:
         </p>
         <div class="bg-brand/10 border-2 border-brand rounded-lg p-4 mb-4">
           <div class="flex items-center gap-3">
-            <span class="text-3xl">{{ currentCountryOption.flag }}</span>
+            <span class="text-3xl">{{ currentCountryOption?.flag || '🏳️' }}</span>
             <div>
-              <div class="font-semibold text-lg text-gray-800">{{ currentCountryOption.label }}</div>
+              <div class="font-semibold text-lg text-gray-800">{{ currentCountryOption?.label || 'País' }}</div>
               <div class="text-sm text-gray-600">País actual en la aplicación</div>
             </div>
           </div>
         </div>
-        
+
         <p class="text-sm text-gray-600 mb-4">
           ¿Deseas cargar el polígono para este país o cambiar a otro?
         </p>
       </div>
-      
+
       <div class="mb-4">
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           Seleccionar país:
@@ -38,7 +38,7 @@
           </option>
         </select>
       </div>
-      
+
       <div class="flex gap-3 justify-end">
         <button
           @click="cancel"

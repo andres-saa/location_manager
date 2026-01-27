@@ -43,10 +43,12 @@ const calculateBounds = (polygonsData: Array<{ coordinates: number[][] }>): goog
   if (!polygonsData || polygonsData.length === 0) return null
 
   const bounds = new google.maps.LatLngBounds()
-  
+
   polygonsData.forEach(polygonData => {
     polygonData.coordinates.forEach(([lat, lng]) => {
-      bounds.extend(new google.maps.LatLng(lat, lng))
+      if (lat !== undefined && lng !== undefined) {
+        bounds.extend(new google.maps.LatLng(lat, lng))
+      }
     })
   })
 
@@ -106,7 +108,7 @@ const loadPolygons = (polygonsData: Array<{ id?: number; name: string; coordinat
   if (!map.value) return
 
   // Limpiar polígonos existentes
-  polygons.value.forEach(p => p.setMap(null))
+  polygons.value.forEach((p: google.maps.Polygon) => p.setMap(null))
   polygons.value = []
 
   if (polygonsData.length === 0) return
@@ -146,9 +148,8 @@ const loadPolygons = (polygonsData: Array<{ id?: number; name: string; coordinat
   // Ajustar el mapa para mostrar todos los polígonos
   const bounds = calculateBounds(polygonsData)
   if (bounds) {
-    map.value.fitBounds(bounds)
     // Ajustar padding para que no quede pegado a los bordes
-    map.value.fitBounds(bounds, { padding: 50 })
+    map.value.fitBounds(bounds, 50)
   }
 }
 
@@ -164,7 +165,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  polygons.value.forEach(p => p.setMap(null))
+  polygons.value.forEach((p: google.maps.Polygon) => p.setMap(null))
 })
 </script>
 

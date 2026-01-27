@@ -11,8 +11,8 @@
     </div>
 
     <div v-else class="space-y-3">
-      <div 
-        v-for="tariff in tariffs" 
+      <div
+        v-for="tariff in tariffs"
         :key="tariff.site_id"
         class="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
       >
@@ -92,12 +92,12 @@
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-brand focus:border-brand"
           >
             <option :value="undefined">Seleccione una sede</option>
-            <option 
-              v-for="site in availableSitesForCreation" 
-              :key="site.site_id" 
+            <option
+              v-for="site in availableSitesForCreation"
+              :key="site.site_id"
               :value="site.site_id"
             >
-              {{ site.site_name }} ({{ site.city_name || 'N/A' }}) - 
+              {{ site.site_name }} ({{ site.city_name || 'N/A' }}) -
               {{ getCountryFromSite(site) === 'usa' ? '🇺🇸 USA' : getCountryFromSite(site) === 'spain' ? '🇪🇸 España' : '🇨🇴 Colombia' }}
             </option>
           </select>
@@ -254,7 +254,7 @@
         <p class="text-sm text-gray-600 mb-4">
           Selecciona las sedes adicionales donde deseas {{ editingTariff ? 'aplicar estos cambios' : 'replicar esta tarifa' }}:
         </p>
-        
+
         <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-md p-3 mb-4">
           <div v-if="availableSitesForReplication.length === 0" class="text-sm text-gray-500 text-center py-4">
             <p v-if="editingTariff">No hay sedes adicionales disponibles para replicar los cambios.</p>
@@ -277,7 +277,7 @@
                 {{ site.site_name }}
               </div>
               <div class="text-xs text-gray-500">
-                {{ site.city_name || 'N/A' }} - 
+                {{ site.city_name || 'N/A' }} -
                 {{ getCountryFromSite(site) === 'usa' ? '🇺🇸 USA' : getCountryFromSite(site) === 'spain' ? '🇪🇸 España' : '🇨🇴 Colombia' }}
               </div>
             </div>
@@ -365,13 +365,13 @@ watch(() => formData.value.tariff_mode, (newMode) => {
 const isFormValid = computed(() => {
   if (!editingTariff.value && !formData.value.site_id) return false
   if (formData.value.price_per_km <= 0 || formData.value.min_fee <= 0) return false
-  
+
   // Validar campos de modo surcharge
   if (formData.value.tariff_mode === 'surcharge') {
     if (!formData.value.base_distance_km || formData.value.base_distance_km <= 0) return false
     if (!formData.value.surcharge_per_km || formData.value.surcharge_per_km <= 0) return false
   }
-  
+
   return true
 })
 
@@ -405,7 +405,7 @@ const availableSites = computed(() => {
 const availableSitesForCreation = computed(() => {
   // Obtener IDs de sedes que ya tienen tarifa
   const sitesWithTariff = new Set(tariffs.value.map(t => t.site_id))
-  
+
   // Filtrar sedes disponibles excluyendo las que ya tienen tarifa
   return availableSites.value.filter(site => !sitesWithTariff.has(site.site_id))
 })
@@ -414,16 +414,16 @@ const availableSitesForCreation = computed(() => {
 const availableSitesForReplication = computed(() => {
   const sitesWithTariff = new Set(tariffs.value.map(t => t.site_id))
   const mainSiteId = editingTariff.value?.site_id || formData.value.site_id
-  
+
   // Si estamos editando, permitir replicar a sedes que ya tienen tarifa (para actualizarlas)
   // Si estamos creando, excluir las que ya tienen tarifa
   return availableSites.value.filter(site => {
     // Siempre excluir la sede principal
     if (site.site_id === mainSiteId) return false
-    
+
     // Si estamos editando, permitir todas las demás sedes (incluso las que tienen tarifa)
     if (editingTariff.value) return true
-    
+
     // Si estamos creando, excluir las que ya tienen tarifa
     return !sitesWithTariff.has(site.site_id)
   })
@@ -544,7 +544,7 @@ const prepareTariffData = () => {
     min_fee: formData.value.min_fee,
     max_fee: formData.value.max_fee || null
   }
-  
+
   // Si el modo es 'fixed', limpiar campos de surcharge
   if (formData.value.tariff_mode === 'fixed') {
     return {
@@ -571,7 +571,7 @@ const saveTariff = async () => {
       // Actualizar
       const updateData: SiteTariffUpdate = prepareTariffData()
       await siteTariffsApi.update(editingTariff.value.site_id, updateData)
-      
+
       // Guardar datos para replicación
       pendingTariffData.value = {
         update: {
@@ -585,21 +585,21 @@ const saveTariff = async () => {
         site_id: formData.value.site_id!,
         ...prepareTariffData()
       }
-      
+
       await siteTariffsApi.create(createData)
-      
+
       // Guardar datos para replicación
       pendingTariffData.value = {
         create: createData
       }
     }
-    
+
     // Recargar tarifas para actualizar la lista
     await loadTariffs()
-    
+
     // IMPORTANTE: Resetear saving antes de abrir el modal de replicación
     saving.value = false
-    
+
     // Cerrar modal principal y mostrar modal de replicación
     showModal.value = false
     showReplicateModal.value = true
@@ -615,15 +615,15 @@ const confirmReplication = async () => {
     alert('Por favor selecciona al menos una sede para replicar')
     return
   }
-  
+
   if (!pendingTariffData.value) {
     console.error('No hay datos de tarifa pendientes para replicar')
     alert('Error: No hay datos de tarifa para replicar')
     return
   }
-  
+
   saving.value = true
-  
+
   // Timeout de seguridad para evitar que se quede bloqueado
   const timeoutId = setTimeout(() => {
     if (saving.value) {
@@ -632,13 +632,13 @@ const confirmReplication = async () => {
       alert('La operación está tomando más tiempo del esperado. Por favor verifica la consola para más detalles.')
     }
   }, 30000) // 30 segundos
-  
+
   try {
     console.log('Iniciando replicación...', {
       selectedSites: selectedSitesForReplication.value,
       pendingData: pendingTariffData.value
     })
-    
+
     if (pendingTariffData.value.create) {
       // Replicar creación a múltiples sedes
       console.log('Replicando creación a', selectedSitesForReplication.value.length, 'sedes')
@@ -655,17 +655,17 @@ const confirmReplication = async () => {
           throw new Error(`Error en sede ${siteId}: ${err.response?.data?.detail || err.message}`)
         }
       })
-      
+
       await Promise.all(createPromises)
       console.log('✅ Replicación completada')
       alert(`✅ Tarifa replicada exitosamente en ${selectedSitesForReplication.value.length} sede(s)`)
     } else if (pendingTariffData.value.update) {
       // Replicar actualización a múltiples sedes
       console.log('Replicando actualización a', selectedSitesForReplication.value.length, 'sedes')
-      
+
       // Primero recargar tarifas para tener la lista actualizada
       await loadTariffs()
-      
+
       const updatePromises = selectedSitesForReplication.value.map(async (siteId) => {
         try {
           // Verificar si la sede ya tiene tarifa
@@ -693,7 +693,7 @@ const confirmReplication = async () => {
           throw new Error(`Error en sede ${siteId}: ${err.response?.data?.detail || err.message}`)
         }
       })
-      
+
       await Promise.all(updatePromises)
       console.log('✅ Replicación completada')
       alert(`✅ Cambios replicados exitosamente en ${selectedSitesForReplication.value.length} sede(s)`)
@@ -701,7 +701,7 @@ const confirmReplication = async () => {
       console.error('No hay datos válidos para replicar', pendingTariffData.value)
       throw new Error('No hay datos válidos para replicar')
     }
-    
+
     await loadTariffs()
     closeReplicateModal()
     closeModal()

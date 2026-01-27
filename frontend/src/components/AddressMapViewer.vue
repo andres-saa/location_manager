@@ -64,10 +64,14 @@ const initMap = async () => {
 
     // Si hay un polígono, mostrarlo
     if (props.polygon && props.polygon.coordinates && props.polygon.coordinates.length > 0) {
-      const path = props.polygon.coordinates.map((coord: number[]) => ({
-        lat: coord[0],
-        lng: coord[1]
-      }))
+      const path = props.polygon.coordinates
+        .map((coord: number[]) => ({
+          lat: coord[0],
+          lng: coord[1]
+        }))
+        .filter((point): point is { lat: number; lng: number } => 
+          point.lat !== undefined && point.lng !== undefined && !isNaN(point.lat) && !isNaN(point.lng)
+        )
 
       polygon.value = new google.maps.Polygon({
         paths: path,
@@ -84,9 +88,13 @@ const initMap = async () => {
 
       // Ajustar el mapa para mostrar el polígono y el marcador
       const bounds = new google.maps.LatLngBounds()
-      path.forEach(point => bounds.extend(point))
+      path.forEach(point => {
+        if (point.lat !== undefined && point.lng !== undefined) {
+          bounds.extend(point)
+        }
+      })
       bounds.extend({ lat: props.latitude, lng: props.longitude })
-      map.value.fitBounds(bounds, { padding: 50 })
+      map.value.fitBounds(bounds, 50)
     } else {
       // Si no hay polígono, solo centrar en el marcador con zoom apropiado
       map.value.setZoom(15)
@@ -115,7 +123,7 @@ watch(() => [props.latitude, props.longitude, props.polygon], async () => {
       animation: google.maps.Animation.DROP
     })
   }
-  
+
   map.value.setCenter({ lat: props.latitude, lng: props.longitude })
 
   // Actualizar polígono si existe
@@ -125,10 +133,14 @@ watch(() => [props.latitude, props.longitude, props.polygon], async () => {
   }
 
   if (props.polygon && props.polygon.coordinates && props.polygon.coordinates.length > 0) {
-    const path = props.polygon.coordinates.map((coord: number[]) => ({
-      lat: coord[0],
-      lng: coord[1]
-    }))
+    const path = props.polygon.coordinates
+      .map((coord: number[]) => ({
+        lat: coord[0],
+        lng: coord[1]
+      }))
+      .filter((point): point is { lat: number; lng: number } => 
+        point.lat !== undefined && point.lng !== undefined && !isNaN(point.lat) && !isNaN(point.lng)
+      )
 
     polygon.value = new google.maps.Polygon({
       paths: path,
@@ -145,9 +157,13 @@ watch(() => [props.latitude, props.longitude, props.polygon], async () => {
 
     // Ajustar bounds para mostrar el polígono y el marcador
     const bounds = new google.maps.LatLngBounds()
-    path.forEach(point => bounds.extend(point))
+    path.forEach(point => {
+      if (point.lat !== undefined && point.lng !== undefined) {
+        bounds.extend(point)
+      }
+    })
     bounds.extend({ lat: props.latitude, lng: props.longitude })
-    map.value.fitBounds(bounds, { padding: 50 })
+    map.value.fitBounds(bounds, 50)
   } else {
     // Si no hay polígono, solo centrar en el marcador
     map.value.setZoom(15)

@@ -245,6 +245,7 @@ import GoogleMapEditor from './GoogleMapEditor.vue'
 import PolygonSelectorModal from './PolygonSelectorModal.vue'
 import CountryConfirmModal from './CountryConfirmModal.vue'
 import { polygonsToKML, polygonToKML, parseKML, parseKMZ, downloadKML, type KMLPolygon } from '../utils/kml'
+import { filterSitesByCountry, type Country } from '../composables/useCountryFilter'
 
 // Filtro de país usando Pinia store
 const countryStore = useCountryStore()
@@ -268,7 +269,7 @@ const formData = ref({
 
 // Filtrar sedes y polígonos por país
 const sites = computed(() => {
-  return filterSitesByCountry(allSites.value, selectedCountry.value)
+  return filterSitesByCountry(allSites.value as Array<{ time_zone?: string | null }>, selectedCountry.value)
 })
 
 // Google Maps API Key desde variables de entorno
@@ -297,10 +298,12 @@ const calculatePolygonsCenter = (polygons: Array<{ coordinates: number[][] }>): 
 
   polygons.forEach(polygon => {
     polygon.coordinates.forEach(([lat, lng]) => {
-      minLat = Math.min(minLat, lat)
-      maxLat = Math.max(maxLat, lat)
-      minLng = Math.min(minLng, lng)
-      maxLng = Math.max(maxLng, lng)
+      if (lat !== undefined && lng !== undefined) {
+        minLat = Math.min(minLat, lat)
+        maxLat = Math.max(maxLat, lat)
+        minLng = Math.min(minLng, lng)
+        maxLng = Math.max(maxLng, lng)
+      }
     })
   })
 
@@ -384,7 +387,7 @@ const savePolygon = async () => {
     const polygonData = {
       name: formData.value.name,
       description: formData.value.description,
-      site_id: formData.value.site_id || null
+      site_id: formData.value.site_id ?? undefined
       // No actualizamos coordenadas ni color, solo nombre, descripción y sede
     }
 

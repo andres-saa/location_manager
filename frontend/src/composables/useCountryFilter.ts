@@ -18,20 +18,22 @@ export const COUNTRIES: CountryOption[] = [
 const STORAGE_KEY = 'location_manager_selected_country'
 
 // Estado reactivo del país seleccionado
-const selectedCountry = ref<Country>(() => {
+const getInitialCountry = (): Country => {
   // Cargar desde localStorage o usar 'colombia' por defecto
   const saved = localStorage.getItem(STORAGE_KEY)
   if (saved && ['colombia', 'usa', 'spain'].includes(saved)) {
     return saved as Country
   }
   return 'colombia'
-})
+}
+
+const selectedCountry = ref<Country>(getInitialCountry())
 
 // Función para obtener el país de una sede basado en su timezone
 // Usa exactamente estos timezones: Europe/Madrid, America/New_York, America/Bogota
 export function getCountryFromTimezone(timezone?: string | null): Country | null {
   if (!timezone) return null
-  
+
   // Comparación exacta (case-sensitive) para los timezones oficiales
   if (timezone === 'America/Bogota') {
     return 'colombia'
@@ -40,7 +42,7 @@ export function getCountryFromTimezone(timezone?: string | null): Country | null
   } else if (timezone === 'Europe/Madrid') {
     return 'spain'
   }
-  
+
   return null
 }
 
@@ -51,7 +53,7 @@ export function filterSitesByCountry<T extends { time_zone?: string | null }>(
 ): T[] {
   const targetTimezone = COUNTRIES.find(c => c.value === country)?.timezone
   if (!targetTimezone) return sites
-  
+
   return sites.filter(site => {
     const siteCountry = getCountryFromTimezone(site.time_zone)
     return siteCountry === country
@@ -72,7 +74,7 @@ export function filterPolygonsByCountry<T extends { site_id?: number | null }>(
       siteCountryMap.set(site.site_id, siteCountry)
     }
   })
-  
+
   return polygons.filter(polygon => {
     if (!polygon.site_id) {
       // Si no tiene sede asociada, no incluirlo
@@ -89,13 +91,13 @@ export function useCountryFilter() {
     selectedCountry.value = country
     localStorage.setItem(STORAGE_KEY, country)
   }
-  
+
   const getCountry = () => selectedCountry.value
-  
+
   const getCountryOption = computed(() => {
     return COUNTRIES.find(c => c.value === selectedCountry.value) || COUNTRIES[0]
   })
-  
+
   return {
     selectedCountry: computed(() => selectedCountry.value),
     setCountry,

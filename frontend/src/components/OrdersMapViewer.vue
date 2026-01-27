@@ -120,8 +120,8 @@
         <h3 class="text-base sm:text-lg font-semibold text-gray-800 mb-3 sm:mb-4 flex items-center gap-2">
           <ChartBarIcon class="w-5 h-5 sm:w-6 sm:h-6 text-brand" />
           Estadísticas por Zona
-          <span v-if="selectedCountry !== 'all'" class="text-sm font-normal text-gray-600">
-            ({{ getCountryOption.label }})
+          <span class="text-sm font-normal text-gray-600">
+            ({{ getCountryOption?.label || 'País' }})
           </span>
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
@@ -244,13 +244,7 @@ import { ordersApi, sitesApi, type Order, type OrderListResponse } from '../serv
 import * as XLSX from 'xlsx'
 import { useCountryStore } from '../stores/country'
 
-// Tipos para xlsx
-declare module 'xlsx' {
-  interface WorkBook {
-    Sheets: { [sheet: string]: any }
-    SheetNames: string[]
-  }
-}
+// Tipos para xlsx - removido para evitar conflicto con tipos oficiales
 
 // Google Maps API Key desde variables de entorno
 const googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''
@@ -477,8 +471,8 @@ const loadOrders = async () => {
     } else {
       // Limpiar marcadores si no hay resultados
       if (map.value) {
-        markers.value.forEach(marker => marker.setMap(null))
-        infoWindows.value.forEach(iw => iw.close())
+        markers.value.forEach((marker: google.maps.Marker) => marker.setMap(null))
+        infoWindows.value.forEach((iw: google.maps.InfoWindow) => iw.close())
         markers.value = []
         infoWindows.value = []
       }
@@ -494,8 +488,8 @@ const updateMapMarkers = () => {
   if (!map.value) return
 
   // Limpiar marcadores anteriores
-  markers.value.forEach(marker => marker.setMap(null))
-  infoWindows.value.forEach(iw => iw.close())
+  markers.value.forEach((marker: google.maps.Marker) => marker.setMap(null))
+  infoWindows.value.forEach((iw: google.maps.InfoWindow) => iw.close())
   markers.value = []
   infoWindows.value = []
 
@@ -560,7 +554,7 @@ const updateMapMarkers = () => {
 
     marker.addListener('click', () => {
       // Cerrar otras ventanas
-      infoWindows.value.forEach(iw => iw.close())
+      infoWindows.value.forEach((iw: google.maps.InfoWindow) => iw.close())
       infoWindow.open(map.value, marker)
     })
 
@@ -722,8 +716,8 @@ watch(selectedCountry, async (newCountry, oldCountry) => {
 }, { immediate: false })
 
 onUnmounted(() => {
-  markers.value.forEach(marker => marker.setMap(null))
-  infoWindows.value.forEach(iw => iw.close())
+  markers.value.forEach((marker: google.maps.Marker) => marker.setMap(null))
+  infoWindows.value.forEach((iw: google.maps.InfoWindow) => iw.close())
   document.removeEventListener('click', handleClickOutside)
 })
 </script>

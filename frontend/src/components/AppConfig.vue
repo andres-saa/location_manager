@@ -4,7 +4,7 @@
       <Cog6ToothIcon class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-brand" />
       Configuración
     </h2>
-    
+
     <div class="bg-white border border-gray-200 rounded-lg p-4 sm:p-5 md:p-6 shadow-sm">
       <div class="mb-4 sm:mb-5">
         <label class="block text-sm sm:text-base font-semibold text-gray-700 mb-2 sm:mb-3 flex items-center gap-2">
@@ -14,17 +14,17 @@
         <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
           Selecciona cómo se calculará la validación de direcciones:
         </p>
-        
+
         <div class="space-y-3">
-          <label 
+          <label
             class="flex items-start gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all"
-            :class="config.validation_mode === 'polygons' 
-              ? 'border-brand bg-brand/5' 
+            :class="config.validation_mode === 'polygons'
+              ? 'border-brand bg-brand/5'
               : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
           >
-            <input 
-              type="radio" 
-              v-model="config.validation_mode" 
+            <input
+              type="radio"
+              v-model="config.validation_mode"
               value="polygons"
               class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-brand border-gray-300 focus:ring-brand"
             />
@@ -34,21 +34,21 @@
                 Validación por Polígonos
               </div>
               <p class="text-xs sm:text-sm text-gray-600">
-                La dirección se valida verificando si cae dentro de los polígonos definidos. 
+                La dirección se valida verificando si cae dentro de los polígonos definidos.
                 Si cae en múltiples polígonos, se selecciona el más central.
               </p>
             </div>
           </label>
-          
-          <label 
+
+          <label
             class="flex items-start gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all"
-            :class="config.validation_mode === 'nearest_site' 
-              ? 'border-brand bg-brand/5' 
+            :class="config.validation_mode === 'nearest_site'
+              ? 'border-brand bg-brand/5'
               : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
           >
-            <input 
-              type="radio" 
-              v-model="config.validation_mode" 
+            <input
+              type="radio"
+              v-model="config.validation_mode"
               value="nearest_site"
               class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-brand border-gray-300 focus:ring-brand"
             />
@@ -58,7 +58,7 @@
                 Sede Más Cercana (Automático)
               </div>
               <p class="text-xs sm:text-sm text-gray-600">
-                La dirección se valida automáticamente seleccionando la sede más cercana 
+                La dirección se valida automáticamente seleccionando la sede más cercana
                 a la dirección del usuario, sin importar los polígonos.
               </p>
             </div>
@@ -75,17 +75,17 @@
         <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
           Selecciona cómo se calculará el precio de entrega:
         </p>
-        
+
         <div class="space-y-3">
-          <label 
+          <label
             class="flex items-start gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all"
-            :class="config.colombia_delivery_mode === 'cargo' 
-              ? 'border-brand bg-brand/5' 
+            :class="config.colombia_delivery_mode === 'cargo'
+              ? 'border-brand bg-brand/5'
               : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
           >
-            <input 
-              type="radio" 
-              v-model="config.colombia_delivery_mode" 
+            <input
+              type="radio"
+              v-model="config.colombia_delivery_mode"
               value="cargo"
               class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-brand border-gray-300 focus:ring-brand"
             />
@@ -99,16 +99,16 @@
               </p>
             </div>
           </label>
-          
-          <label 
+
+          <label
             class="flex items-start gap-3 p-3 sm:p-4 border-2 rounded-lg cursor-pointer transition-all"
-            :class="config.colombia_delivery_mode === 'calculated' 
-              ? 'border-brand bg-brand/5' 
+            :class="config.colombia_delivery_mode === 'calculated'
+              ? 'border-brand bg-brand/5'
               : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'"
           >
-            <input 
-              type="radio" 
-              v-model="config.colombia_delivery_mode" 
+            <input
+              type="radio"
+              v-model="config.colombia_delivery_mode"
               value="calculated"
               class="mt-1 w-4 h-4 sm:w-5 sm:h-5 text-brand border-gray-300 focus:ring-brand"
             />
@@ -134,7 +134,7 @@
         <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
           Establece la distancia máxima en kilómetros para entregas. Si una dirección está dentro de un polígono, esta distancia se ignora.
         </p>
-        
+
         <div class="flex items-center gap-3">
           <input
             v-model.number="config.max_delivery_distance_km"
@@ -167,13 +167,13 @@
         <p class="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4">
           Configura el precio por kilómetro, tarifa mínima y máxima para cada sede.
         </p>
-        
+
         <SiteTariffsManager :colombia-delivery-mode="config.colombia_delivery_mode" />
       </div>
-      
+
       <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-end pt-3 sm:pt-4 border-t border-gray-200">
-        <button 
-          @click="saveConfig" 
+        <button
+          @click="saveConfig"
           :disabled="loading || !hasChanges"
           class="btn-primary flex items-center justify-center gap-2 text-sm sm:text-base px-4 sm:px-5 py-2 sm:py-2.5"
         >
@@ -181,8 +181,8 @@
           <CheckIcon v-else class="w-4 h-4 sm:w-5 sm:h-5" />
           {{ loading ? 'Guardando...' : 'Guardar Configuración' }}
         </button>
-        <button 
-          @click="loadConfig" 
+        <button
+          @click="loadConfig"
           :disabled="loading"
           class="px-4 sm:px-5 py-2 sm:py-2.5 text-sm sm:text-base text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
         >
@@ -190,8 +190,8 @@
           Recargar
         </button>
       </div>
-      
-      <div v-if="saveMessage" 
+
+      <div v-if="saveMessage"
         class="mt-3 sm:mt-4 p-3 rounded-lg text-sm"
         :class="saveMessage.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'"
       >
@@ -203,10 +203,10 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { 
-  Cog6ToothIcon, 
-  MapPinIcon, 
-  MapIcon, 
+import {
+  Cog6ToothIcon,
+  MapPinIcon,
+  MapIcon,
   BuildingOfficeIcon,
   ArrowPathIcon,
   CheckIcon,
@@ -296,7 +296,7 @@ const loadConfig = async () => {
 
 const saveConfig = async () => {
   if (!hasChanges.value) return
-  
+
   loading.value = true
   saveMessage.value = null
   try {
