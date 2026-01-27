@@ -6,13 +6,11 @@ const VALIDATE_TOKEN_URL = 'https://backend.salchimonster.com/validate-token'
 export async function validateToken(token: string): Promise<TokenResponse | null> {
   try {
     // Intentar primero con el token en el header Authorization
-    const response = await axios.post<TokenResponse>(
+    const response = await axios.get<TokenResponse>(
       VALIDATE_TOKEN_URL,
-      {},
       {
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
         },
       }
     )
@@ -22,14 +20,8 @@ export async function validateToken(token: string): Promise<TokenResponse | null
     // Si falla con Authorization header, intentar con query parameter
     if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
       try {
-        const response = await axios.post<TokenResponse>(
-          `${VALIDATE_TOKEN_URL}?token=${encodeURIComponent(token)}`,
-          {},
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
+        const response = await axios.get<TokenResponse>(
+          `${VALIDATE_TOKEN_URL}?token=${encodeURIComponent(token)}`
         )
         return response.data
       } catch (secondError) {
