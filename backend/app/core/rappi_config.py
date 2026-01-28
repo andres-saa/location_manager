@@ -18,7 +18,7 @@ RAPPI_ENV = settings.rappi_env.lower() if hasattr(settings, 'rappi_env') else 'd
 # Base URLs según el ambiente
 RAPPI_BASE_URLS = {
     'dev': 'https://microservices.dev.rappi.com',
-    'prod': 'https://microservices.rappi.com'  # Ajustar cuando se conozca la URL de producción
+    'prod': 'https://microservices.dev.rappi.com'  # Ajustar cuando se conozca la URL de producción
 }
 
 # Base URL actual según el ambiente

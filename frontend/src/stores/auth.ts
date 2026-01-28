@@ -23,6 +23,9 @@ const VALIDATION_INTERVAL = 3 * 60 * 1000 // 3 minutos en milisegundos
 const STORAGE_TOKEN_KEY = 'auth_token'
 const STORAGE_USER_KEY = 'auth_user'
 
+// Detectar si estamos en desarrollo
+const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development'
+
 export const useAuthStore = defineStore('auth', () => {
   // Intentar cargar token y usuario desde localStorage
   const savedToken = localStorage.getItem(STORAGE_TOKEN_KEY)
@@ -45,6 +48,24 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Actions
   async function initializeAuth() {
+    // En desarrollo, no requerir autenticación
+    if (isDev) {
+      // Crear un usuario mock para desarrollo
+      const mockUser: User = {
+        sub: 'dev-user',
+        rol: 'admin',
+        name: 'Usuario Desarrollo',
+        site_name: 'Desarrollo',
+        dni: '00000000',
+        id: 1,
+        site_id: 1,
+        exp: Date.now() / 1000 + 86400 // Expira en 24 horas
+      }
+      user.value = mockUser
+      token.value = 'dev-token'
+      return true
+    }
+
     // Si ya hay un token guardado en localStorage, validarlo primero
     if (token.value && user.value) {
       const isValid = await validateAndSetToken(token.value)

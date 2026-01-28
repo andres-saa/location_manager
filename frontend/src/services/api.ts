@@ -1,6 +1,12 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://location-manager.salchimonster.com/api'
+// Detectar si estamos en desarrollo
+const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development'
+
+// En desarrollo usar localhost:8000, en producción usar la URL configurada o la por defecto
+const API_BASE_URL = isDev 
+  ? 'http://localhost:8000/api'
+  : (import.meta.env.VITE_API_BASE_URL || 'https://location-manager.salchimonster.com/api')
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -11,6 +17,10 @@ const api = axios.create({
     indexes: null // Para arrays: cities=valor1&cities=valor2 en lugar de cities[]=valor1
   }
 })
+
+// Interceptor para agregar token de autenticación solo en producción
+// Se configura después de que el store esté disponible para evitar dependencias circulares
+// Se puede inicializar desde App.vue después de que se monte el componente
 
 // Tipos
 export interface Coordinate {

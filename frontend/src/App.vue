@@ -143,7 +143,7 @@ import { useCountryStore } from './stores/country'
 import { useAuthStore } from './stores/auth'
 import { COUNTRIES } from './composables/useCountryFilter'
 import type { Country } from './composables/useCountryFilter'
-import { appConfigApi } from './services/api'
+import api, { appConfigApi } from './services/api'
 
 const activeTab = ref('polygons')
 
@@ -200,6 +200,23 @@ watch(visibleTabs, (newTabs) => {
 
 // Autenticación
 const authStore = useAuthStore()
+
+// Configurar interceptor de axios para agregar token en producción
+const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development'
+if (!isDev) {
+  api.interceptors.request.use(
+    (config) => {
+      const token = authStore.token
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`
+      }
+      return config
+    },
+    (error) => {
+      return Promise.reject(error)
+    }
+  )
+}
 
 // Cargar configuración al montar y cuando cambie el país
 onMounted(async () => {
