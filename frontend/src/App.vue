@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <header 
+    <header
       class="relative py-4 sm:py-6 md:py-8 px-3 sm:px-4 md:px-5 overflow-hidden"
       style="background: linear-gradient(to right, #ffffff, #f8f9fa); transition: background 0.5s ease-in-out;"
     >
-      
+
       <div class="relative z-10 flex flex-col items-center justify-center gap-3 sm:gap-4 md:gap-5">
         <!-- Título principal -->
         <div class="flex flex-col items-center text-center">
@@ -16,48 +16,48 @@
             Gestión de polígonos y locaciones con Google Maps
           </p>
         </div>
-        
+
         <!-- Colaboración: Logos -->
         <div class="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 flex-wrap">
           <!-- Logo de Salchimonster con animación -->
           <Transition name="fade" mode="out-in">
-            <img 
+            <img
               :key="`salchimonster-${selectedCountry}`"
-              src="/logo-salchimonster.png" 
-              alt="Salchimonster Logo" 
-              class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14" 
+              src="/logo-salchimonster.png"
+              alt="Salchimonster Logo"
+              class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14"
               style="filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));"
             />
           </Transition>
           <!-- Signo de multiplicación con animación -->
           <Transition name="fade" mode="out-in">
-            <span 
+            <span
               :key="`multiply-${selectedCountry}`"
               class="text-gray-600 text-lg sm:text-xl md:text-2xl font-semibold"
             >×</span>
           </Transition>
           <!-- Logo de Rappi Cargo para Colombia -->
           <Transition name="fade" mode="out-in">
-            <img 
+            <img
               v-if="selectedCountry === 'colombia'"
               :key="`rappi-${selectedCountry}`"
-              src="https://cargo.dev.rappi.com/assets/landing/images/logo.png" 
-              alt="Rappi Cargo Logo" 
-              class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14" 
+              src="https://cargo.dev.rappi.com/assets/landing/images/logo.png"
+              alt="Rappi Cargo Logo"
+              class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14"
               style="filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));"
             />
             <!-- Logo de Google Maps para USA y España con badge de bandera -->
             <div v-else class="relative inline-block">
-              <img 
+              <img
                 :key="`googlemaps-${selectedCountry}`"
-                src="/google-maps-logo.png" 
-                alt="Google Maps Logo" 
-                class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14" 
+                src="/google-maps-logo.png"
+                alt="Google Maps Logo"
+                class="h-8 w-auto object-contain sm:h-10 md:h-12 lg:h-14"
                 style="filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));"
               />
               <!-- Badge de bandera -->
-              <img 
-                :src="getCountryFlagUrl(selectedCountry)" 
+              <img
+                :src="getCountryFlagUrl(selectedCountry)"
                 :alt="getCountryOption?.label || 'País'"
                 class="absolute -top-1 -right-1 sm:-top-1.5 sm:-right-1.5 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white shadow-md object-cover"
               />
@@ -83,8 +83,8 @@
             </option>
           </select>
           <!-- Bandera del país seleccionado -->
-          <img 
-            :src="getCountryFlagUrl(selectedCountry)" 
+          <img
+            :src="getCountryFlagUrl(selectedCountry)"
             :alt="getCountryOption?.label || 'País'"
             class="absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 object-contain pointer-events-none"
           />
@@ -92,29 +92,29 @@
           <ChevronDownIcon class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none" />
         </div>
       </div>
-      
+
       <!-- Perfil de Usuario -->
       <UserProfile />
     </div>
 
     <nav class="sticky top-[57px] sm:top-[65px] z-50 flex bg-white border-b-2 border-gray-200 px-2 sm:px-3 md:px-5 gap-0 overflow-x-auto scrollbar-hide shadow-sm">
-      <button 
-        v-for="tab in visibleTabs" 
+      <button
+        v-for="tab in visibleTabs"
         :key="tab.id"
         @click="activeTab = tab.id"
         :class="[
           'px-3 py-2.5 sm:px-4 sm:py-3 md:px-6 md:py-3.5 lg:px-8 lg:py-4 border-none cursor-pointer text-xs sm:text-sm md:text-base font-medium transition-all whitespace-nowrap flex-shrink-0 relative flex items-center justify-center gap-1.5 sm:gap-2',
-          activeTab === tab.id 
-            ? 'text-brand border-b-[3px] border-brand bg-brand/5 font-semibold' 
+          activeTab === tab.id
+            ? 'text-brand border-b-[3px] border-brand bg-brand/5 font-semibold'
             : 'text-gray-600 hover:text-brand hover:bg-gray-50 border-b-[3px] border-transparent'
         ]"
       >
-        <component 
-          :is="tab.icon" 
+        <component
+          :is="tab.icon"
           :class="[
             'w-4 h-4 sm:w-[18px] sm:h-[18px] md:w-5 md:h-5 transition-colors flex-shrink-0',
             activeTab === tab.id ? 'text-brand' : 'text-gray-500'
-          ]" 
+          ]"
         />
         <span>{{ tab.label }}</span>
       </button>
@@ -126,18 +126,20 @@
       <PickingPointManager v-if="activeTab === 'picking-points'" />
       <OrdersMapViewer v-if="activeTab === 'orders'" />
       <AppConfig v-if="activeTab === 'config'" />
+      <Manual v-if="activeTab === 'manual'" />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { MapPinIcon, MapIcon, MagnifyingGlassIcon, TruckIcon, Cog6ToothIcon, GlobeAmericasIcon, ChevronDownIcon } from '@heroicons/vue/24/outline'
+import { MapPinIcon, MapIcon, MagnifyingGlassIcon, TruckIcon, Cog6ToothIcon, GlobeAmericasIcon, ChevronDownIcon, BookOpenIcon } from '@heroicons/vue/24/outline'
 import PolygonManager from './components/PolygonManager.vue'
 import CoordinateChecker from './components/CoordinateChecker.vue'
 import PickingPointManager from './components/PickingPointManager.vue'
 import OrdersMapViewer from './components/OrdersMapViewer.vue'
 import AppConfig from './components/AppConfig.vue'
+import Manual from './components/Manual.vue'
 import UserProfile from './components/UserProfile.vue'
 import { useCountryStore } from './stores/country'
 import { useAuthStore } from './stores/auth'
@@ -153,6 +155,7 @@ const allTabs = [
   { id: 'picking-points', label: 'Picking Points', icon: TruckIcon },
   { id: 'orders', label: 'Pedidos', icon: MapPinIcon },
   { id: 'config', label: 'Configuración', icon: Cog6ToothIcon },
+  { id: 'manual', label: 'Manual', icon: BookOpenIcon },
 ]
 
 // Filtro de país usando Pinia store
@@ -226,7 +229,7 @@ onMounted(async () => {
     // Si no está autenticado, redirectToLogin ya fue llamado
     return
   }
-  
+
   // Si está autenticado, cargar configuración
   loadAppConfig()
 })

@@ -4,7 +4,7 @@ import axios from 'axios'
 const isDev = import.meta.env.DEV || import.meta.env.MODE === 'development'
 
 // En desarrollo usar localhost:8000, en producción usar la URL configurada o la por defecto
-const API_BASE_URL = isDev 
+const API_BASE_URL = isDev
   ? 'http://localhost:8000/api'
   : (import.meta.env.VITE_API_BASE_URL || 'https://location-manager.salchimonster.com/api')
 
@@ -106,6 +106,13 @@ export interface DeliveryPricing {
   uses_rappi: boolean
 }
 
+export interface ActionPoint {
+  external_picking_point_id?: string | null
+  instructions?: string | null
+  action_type: 'PICK_UP' | 'DROP_OFF'
+  location_type: 'STORE' | 'CLIENT'
+}
+
 export interface CheckAddressResponse {
   address: string
   formatted_address?: string | null
@@ -122,6 +129,7 @@ export interface CheckAddressResponse {
   delivery_pricing?: DeliveryPricing | null
   exceeds_max_distance?: boolean | null
   distance_to_site_km?: number | null
+  action_points?: ActionPoint[] | null
 }
 
 // Polígonos
@@ -349,7 +357,7 @@ export const ordersApi = {
       params.cities = cities
     }
     if (country && country !== 'all') params.country = country
-    
+
     return api.get<OrderListResponse>('/orders', { params })
   },
 }
