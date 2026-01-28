@@ -30,7 +30,7 @@
     </div>
 
     <!-- Sección 1: Gestión de Polígonos -->
-    <section :id="sections[0].id" class="mb-12 scroll-mt-20">
+    <section v-if="sections[0]" :id="sections[0].id" class="mb-12 scroll-mt-20">
       <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-brand">
         <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-gray-800">
           <MapIcon class="w-8 h-8 text-brand" />
@@ -142,7 +142,7 @@
     </section>
 
     <!-- Sección 2: Verificar Direcciones -->
-    <section :id="sections[1].id" class="mb-12 scroll-mt-20">
+    <section v-if="sections[1]" :id="sections[1].id" class="mb-12 scroll-mt-20">
       <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-blue-500">
         <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-gray-800">
           <MagnifyingGlassIcon class="w-8 h-8 text-blue-600" />
@@ -227,7 +227,7 @@
     </section>
 
     <!-- Sección 3: Visualizador de Pedidos -->
-    <section :id="sections[2].id" class="mb-12 scroll-mt-20">
+    <section v-if="sections[2]" :id="sections[2].id" class="mb-12 scroll-mt-20">
       <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-green-500">
         <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-gray-800">
           <MapPinIcon class="w-8 h-8 text-green-600" />
@@ -327,7 +327,7 @@
     </section>
 
     <!-- Sección 4: Configuración -->
-    <section :id="sections[3].id" class="mb-12 scroll-mt-20">
+    <section v-if="sections[3]" :id="sections[3].id" class="mb-12 scroll-mt-20">
       <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-indigo-500">
         <h2 class="text-3xl font-bold mb-4 flex items-center gap-3 text-gray-800">
           <Cog6ToothIcon class="w-8 h-8 text-indigo-600" />
@@ -477,7 +477,12 @@ import {
   ArrowUpIcon
 } from '@heroicons/vue/24/outline'
 
-const sections = [
+interface Section {
+  id: string
+  title: string
+}
+
+const sections: Section[] = [
   { id: 'polygons', title: 'Gestión de Polígonos de Cobertura' },
   { id: 'verification', title: 'Verificar Direcciones' },
   { id: 'orders', title: 'Visualizador en Mapa de Pedidos' },
